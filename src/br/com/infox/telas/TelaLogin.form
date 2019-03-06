@@ -140,9 +140,6 @@
           <Image iconType="3" name="/br/com/infox/icones/dberror.png"/>
         </Property>
       </Properties>
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
-      </AccessibilityProperties>
     </Component>
   </SubComponents>
 </Form>

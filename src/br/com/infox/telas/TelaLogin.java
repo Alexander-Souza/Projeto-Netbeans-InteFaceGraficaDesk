@@ -6,6 +6,7 @@
 package br.com.infox.telas;
 
 import br.com.infox.dal.ModuloConexao;
+import java.awt.Color;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,11 +33,27 @@ public class TelaLogin extends javax.swing.JFrame {
             pst.setString(2, txtSenha.getText());
             //a linha abaixo executa a query
             rs = pst.executeQuery();
-
+            //se exixtir um usuario e senha correspondente
             if (rs.next()) {
-                TelaPrincipal principal = new TelaPrincipal();
-                principal.setVisible(true);
-                this.dispose();
+                //a linha abaixo obtem o conteúdo do campo perfil da tabela tbusuarios
+                String perfil = rs.getString(6);
+                //System.out.println(perfil);
+                //a linha abaixo exibe  o conteúdo do campo da tabela
+                if (perfil.equals("administrador")) {
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.menuRelatorio.setEnabled(true);
+                    TelaPrincipal.menuCadastroUsuario.setEnabled(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    TelaPrincipal.lblUsuario.setForeground(Color.red);
+                    this.dispose();
+                } else {
+                    TelaPrincipal principal = new TelaPrincipal();
+                    principal.setVisible(true);
+                    TelaPrincipal.lblUsuario.setText(rs.getString(2));
+                    TelaPrincipal.lblUsuario.setForeground(Color.blue);
+                    this.dispose();
+                }
                 conexao.close();
             } else {
                 JOptionPane.showMessageDialog(null, "Usuário e Senha Inválido...");
@@ -149,8 +166,6 @@ public class TelaLogin extends javax.swing.JFrame {
                     .addComponent(lblStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        lblStatus.getAccessibleContext().setAccessibleName("");
 
         setSize(new java.awt.Dimension(471, 267));
         setLocationRelativeTo(null);
