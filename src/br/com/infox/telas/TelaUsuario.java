@@ -5,17 +5,57 @@
  */
 package br.com.infox.telas;
 
+import br.com.infox.dal.ModuloConexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Alexander
  */
 public class TelaUsuario extends javax.swing.JInternalFrame {
+    
+    Connection conexao = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
 
     /**
      * Creates new form TelaUsuario
      */
     public TelaUsuario() {
         initComponents();
+        conexao = ModuloConexao.conector();
+    }
+    
+    private void consultar() {
+        String sql = "select * from tbusuarios where iduser=?";
+        try {
+            pst = conexao.prepareStatement(sql);
+            pst.setString(1, txtUsuarioId.getText());
+            rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                txtUsuarioNome.setText(rs.getString(2));
+                txtUsuarioFone.setText(rs.getString(3));
+                txtUsuarioLogin.setText(rs.getString(4));
+                txtUsuarioSenha.setText(rs.getString(5));
+                //a linha abaixo se refere ao combobox
+                cboUsuarioPerfil.setSelectedItem(rs.getString(6));
+            }else{
+                JOptionPane.showMessageDialog(null, "Usuário não cadastrado...");
+                //as linhas abaixo limpa os campos
+                txtUsuarioId.setText(null);
+                txtUsuarioNome.setText(null);
+                txtUsuarioFone.setText(null);
+                txtUsuarioLogin.setText(null);
+                txtUsuarioSenha.setText(null);
+                cboUsuarioPerfil.setSelectedItem(null);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
     }
 
     /**
@@ -75,7 +115,7 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         txtUsuarioSenha.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         cboUsuarioPerfil.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        cboUsuarioPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "administrador", "usuário" }));
+        cboUsuarioPerfil.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "administrador", "user" }));
 
         jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel6.setText("Telefone");
@@ -91,6 +131,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
         btnUsuarioRead.setToolTipText("Consultar Usuário");
         btnUsuarioRead.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnUsuarioRead.setPreferredSize(new java.awt.Dimension(80, 80));
+        btnUsuarioRead.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUsuarioReadActionPerformed(evt);
+            }
+        });
 
         btnUsuarioUpdate.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/infox/icones/update.png"))); // NOI18N
         btnUsuarioUpdate.setToolTipText("Alterar Usuário");
@@ -181,6 +226,11 @@ public class TelaUsuario extends javax.swing.JInternalFrame {
 
         setBounds(0, 0, 738, 730);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnUsuarioReadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUsuarioReadActionPerformed
+        //chamando o metodo consultar;
+        consultar();
+    }//GEN-LAST:event_btnUsuarioReadActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
